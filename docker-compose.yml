@@ -6,3 +6,9 @@ services:
       context: .
     ports:
     - "65020:3000"
+
+networks:
+  default:
+    name: projectset
+    external: true
+
