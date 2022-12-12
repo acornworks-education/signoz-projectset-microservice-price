@@ -4,7 +4,7 @@ const { resolve } = require('path');
 const { readFileSync } = require('fs');
 const { logger } = require('./logger');
 const util = require('util');
-const fetch = require('sync-fetch');
+const fetch = require('node-fetch');
 
 const CONFIG_FILE =  `${resolve('.')}/application.yaml`;
 
@@ -20,11 +20,12 @@ const HistoricalDataProcessor = class {
         logger.info(`Historical URL Format: ${this.historicalBaseUrl}`);
     }
 
-    getSpotPrice =  (symbol) => {
+    getSpotPrice = async (symbol) => {
         const callUrl = util.format(this.spotBaseUrl, symbol);        
         logger.info(`Spot price call URL: ${callUrl}`);
 
-        const yahooData = fetch(callUrl).json();
+        const yahooData = await (await fetch(callUrl)).json();
+
         const price = yahooData['optionChain']['result'][0]['quote']['regularMarketPrice'];
 
         return {
@@ -34,7 +35,7 @@ const HistoricalDataProcessor = class {
         }
     }
 
-    getHisoricalPrice = (symbol) => {
+    getHisoricalPrice = async (symbol) => {
         const currentDate = new Date();
         const endMills = Math.floor(currentDate.valueOf() / 1000);        
         currentDate.setFullYear(currentDate.getFullYear() - 1);
@@ -43,7 +44,7 @@ const HistoricalDataProcessor = class {
         const callUrl = util.format(this.historicalBaseUrl, symbol, startMills, endMills);
         logger.info(`Historical price call URL: ${callUrl}`);
 
-        const yahooDataStr = fetch(callUrl).text();
+        const yahooDataStr = await (await fetch(callUrl)).text();
 
         const yahooData = csv.parse(yahooDataStr, {
             columns: true,
