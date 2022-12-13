@@ -3,6 +3,7 @@ FROM node:19
 ENV NODE_ENV=production
 
 COPY app.js app.js
+COPY tracing.js tracing.js
 COPY package.json package.json
 COPY application.yaml application.yaml
 COPY processors processors

@@ -13,13 +13,8 @@ const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-expre
 const { WinstonInstrumentation } = require('@opentelemetry/instrumentation-winston');
 const { logger } = require('./processors/logger');
 
-require('dotenv').config();
-
-const exporterOptions = {
-   url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4318/v1/traces'
-};
-   
-const traceExporter = new OTLPTraceExporter({exporterOptions});
+require('dotenv').config();   
+const traceExporter = new OTLPTraceExporter({});
 
 const provider = new BasicTracerProvider({
     resource: new Resource({
