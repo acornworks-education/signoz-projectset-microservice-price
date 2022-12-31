@@ -1,4 +1,31 @@
 const winston = require('winston');
+const fs = require('fs');
+
+const getDateStr = () => {
+    const currDate = new Date();
+    const twoDigit = (num) => (''+ num).padStart(2, '0');
+    
+    const dateStr = [
+        currDate.getUTCFullYear(),
+        twoDigit(currDate.getUTCMonth() + 1),
+        twoDigit(currDate.getUTCDate())
+    ].join('-');
+
+    const timeStr = [
+        twoDigit(currDate.getUTCHours()),
+        twoDigit(currDate.getUTCMinutes()),
+        twoDigit(currDate.getUTCSeconds())
+    ].join(':');
+
+    return `${dateStr}T${timeStr}`;
+}
+
+const addLogValues = winston.format(info => {
+    info['time_str'] = getDateStr();
+    info['service_group'] = 'acornworks';
+
+    return info;
+});
 
 // Logger configuration
 const logConfiguration = {
@@ -14,7 +41,10 @@ const logConfiguration = {
             winston.format.printf((info) => {
                 return `${info.timestamp} - ${info.label}:[${info.level}]: ${info.message}`;
             })
-        ) : winston.format.json()
+        ) : winston.format.combine(
+            addLogValues(),
+            winston.format.json()
+        )
 };
 
 // Create the logger

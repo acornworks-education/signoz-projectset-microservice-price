@@ -11,7 +11,6 @@ const { SemanticResourceAttributes } = require('@opentelemetry/semantic-conventi
 const { HttpInstrumentation } = require('@opentelemetry/instrumentation-http');
 const { ExpressInstrumentation } = require('@opentelemetry/instrumentation-express');
 const { WinstonInstrumentation } = require('@opentelemetry/instrumentation-winston');
-const { logger } = require('./processors/logger');
 
 require('dotenv').config();   
 const traceExporter = new OTLPTraceExporter({});
@@ -33,6 +32,8 @@ const sdk = new opentelemetry.NodeSDK({
     new WinstonInstrumentation()
    ]
 });
+
+const { logger } = require('./processors/logger');
 
 sdk.start()
     .then(() => logger.info('Tracing initialized'))

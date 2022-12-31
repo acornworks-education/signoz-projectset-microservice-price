@@ -4,11 +4,9 @@ services:
   price:
     build:
       context: .
+    image: k830206/signoz-price:latest
     ports:
     - "65020:3000"
-
-networks:
-  default:
-    name: projectset
-    external: true
-
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://host.docker.internal:4318
+      NODE_ENV: production
